@@ -1,0 +1,2 @@
+ALTER TABLE productos
+MODIFY COLUMN foto VARCHAR(400);
