@@ -7,6 +7,10 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 # Importa la clase Marshmallow del módulo flask_marshmallow
 from flask_marshmallow import Marshmallow
+import os
+
+
+app.config['FOLDER_IMAGES'] = 'public/images'
 
 app=Flask(__name__)
 CORS(app)
@@ -64,6 +68,14 @@ def create_producto():
     foto = request.json["foto"]  
     descripcion = request.json["descripcion"]  
     precio = request.json["precio"]  
+    # Toma el nombre del archivo original como entrada y devuelve un nombre de archivo seguro para su almacenamiento.
+    nombre_imagen = secure_filename(foto.filename)
+    # Separa el nombre del archivo de su extensión, considerando el punto como separador.
+    nombre_base, extension = os.path.splitext(nombre_imagen)
+    # Guarda la imagen con el nombre asociado a su ID.
+    
+    foto.save(os.path.join(app.config['FOLDER_IMAGES'], nombre_imagen))
+
     new_producto = Producto(nombre, foto, descripcion, precio)  
     db.session.add(new_producto)  
     db.session.commit()  
